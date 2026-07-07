@@ -27,7 +27,13 @@ app.post("/email", async (req, res) => {
         message: "All fields are required",
       });
     }
-    const job = await emailQueue.add("send-email", req.body);
+    const job = await emailQueue.add("send-email", req.body, {
+      attempts: 3,
+      backoff: {
+        type: "fixed",
+        delay: 3000,
+      },
+    });
     res.status(201).sendFile(path.resolve(__dirname, "../successmail.html"));
   } catch (err) {
     console.error(err);
