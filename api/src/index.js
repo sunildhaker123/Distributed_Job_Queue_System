@@ -28,11 +28,7 @@ app.post("/email", async (req, res) => {
       });
     }
     const job = await emailQueue.add("send-email", req.body);
-    return res.status(201).json({
-      success: true,
-      message: "Job queued successfully",
-      jobId: job.id,
-    });
+    res.status(201).sendFile(path.resolve(__dirname, "../successmail.html"));
   } catch (err) {
     console.error(err);
     return res.status(500).json({
