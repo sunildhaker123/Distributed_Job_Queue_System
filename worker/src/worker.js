@@ -1,20 +1,23 @@
 const { Worker } = require("bullmq");
 const connection = require("./redis");
-
+// console.log(typeof connection);
+// console.log(connection);
 const emailWorker = new Worker(
   "emails",
   async (job) => {
-    console.log(`Job started with Job ID : ${job.id}`);
-    if (job.attemptsStarted < 3) throw new Error("job execution failed");
+    // console.log(`Job started with Job ID : ${job.id}`);
+    console.log(`[${new Date().toLocaleTimeString()}] START ${job.id}`);
+    // if (job.attemptsStarted < 3) throw new Error("job execution failed");
 
     await new Promise((resolve) => {
-      setTimeout(resolve, 5000);
+      setTimeout(resolve, 2000);
     });
-
-    console.log("Email sent successfully!");
+    console.log(`Email sent successfully!`);
+    console.log(`[${new Date().toLocaleTimeString()}] END ${job.id}`);
   },
   {
     connection,
+    concurrency: 1,
   },
 );
 emailWorker.on("completed", (job) => {

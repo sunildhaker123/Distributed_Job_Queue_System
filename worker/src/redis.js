@@ -1,6 +1,6 @@
-const redis = require("ioredis");
+const Redis = require("ioredis");
 require("dotenv").config();
-const connection = new redis({
+const connection = new Redis({
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,
   maxRetriesPerRequest: null,
