@@ -1,30 +1,20 @@
-function pay() {
-  return new Promise((resolve, reject) => {
-    console.log("Your Payment is in progress");
-    setTimeout(() => {
-      console.log("Payment Successful");
-      resolve();
-    }, 3000);
-  });
-}
-function order() {
-  return new Promise((resolve, reject) => {
-    console.log("placing your order");
-    setTimeout(() => {
-      console.log("Order Placed");
-      resolve();
-    }, 3000);
-  });
-}
-function prepare() {
-  console.log("we are praparing you order");
+const p1 = new Promise((resolve, reject) => {
   setTimeout(() => {
-    console.log("Your Order is prepared");
-  }, 3000);
+    resolve("first Promise got resolved");
+  }, 5000);
+});
+for (let i = 0; i < 10000000000; i++) {}
+const p2 = new Promise((resolve) => {
+  setTimeout(() => {
+    resolve("Second Promise got resolved");
+  }, 10000);
+});
+async function test() {
+  console.log("hello1");
+  const res1 = await p1;
+  console.log(res1);
+  console.log("hello2");
+  const res2 = await p2;
+  console.log(res2);
 }
-async function orderFood() {
-  await pay();
-  await order();
-  prepare();
-}
-orderFood();
+test();

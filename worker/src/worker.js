@@ -10,7 +10,7 @@ const emailWorker = new Worker(
     // if (job.attemptsStarted < 3) throw new Error("job execution failed");
 
     await new Promise((resolve) => {
-      setTimeout(resolve, 2000);
+      setTimeout(resolve, 10 * 1000);
     });
     console.log(`Email sent successfully!`);
     console.log(`[${new Date().toLocaleTimeString()}] END ${job.id}`);
