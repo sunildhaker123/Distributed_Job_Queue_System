@@ -10,7 +10,7 @@ const emailWorker = new Worker(
     // if (job.attemptsStarted < 3) throw new Error("job execution failed");
 
     await new Promise((resolve) => {
-      setTimeout(resolve, 10 * 1000);
+      setTimeout(resolve, 5000);
     });
     console.log(`Email sent successfully!`);
     console.log(`[${new Date().toLocaleTimeString()}] END ${job.id}`);
@@ -20,11 +20,11 @@ const emailWorker = new Worker(
     concurrency: 1,
   },
 );
-emailWorker.on("completed", (job) => {
-  console.log(`✅ Job ${job.id} completed`);
-});
+// emailWorker.on("completed", (job) => {
+//   console.log(`✅ Job ${job.id} completed`);
+// });
 
-emailWorker.on("failed", (job, err) => {
-  console.log(`❌ Job ${job.id} failed`);
-  console.log(err.message);
-});
+// emailWorker.on("failed", (job, err) => {
+//   console.log(`❌ Job ${job.id} failed`);
+//   console.log(err.message);
+// });
