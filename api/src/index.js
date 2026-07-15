@@ -8,15 +8,22 @@ require("dotenv").config({
 });
 
 const express = require("express");
+const cors = require("cors");
+const http = require("http");
 const app = express();
-
+const { initSocket } = require("./socket/index");
 //importing queue
+const server = http.createServer(app);
+initSocket(server);
 const emailQueue = require("./queue");
-const queueEvent = require("./queueEvent");
+require("./queEvents/queueEvent");
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+// app.get("/", (req, res) => {
+//   res.status(201).sendFile(path.resolve(__dirname, "../index.html"));
+// });
 app.post("/api/send-mail", async (req, res) => {
   console.log(req.body);
   try {
@@ -84,9 +91,6 @@ app.get("/jobs/:id", async (req, res) => {
     return res.status(500).json({ success: false, message: err.message });
   }
 });
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../index.html"));
-});
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`server is running at http://localhost:${process.env.PORT}`);
 });

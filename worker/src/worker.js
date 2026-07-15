@@ -17,7 +17,7 @@ const emailWorker = new Worker(
   },
   {
     connection,
-    concurrency: 5,
+    concurrency: 1,
   },
 );
 // emailWorker.on("completed", (job) => {

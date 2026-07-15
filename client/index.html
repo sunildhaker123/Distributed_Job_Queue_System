@@ -35,16 +35,19 @@
             </div>
         </header>
 
-        <form action="/email" method="post">
-            <input type="email" name="to" placeholder="Recipient email" required>
+        <form id="emailForm">
+            <input type="email" id = "to" name="to" placeholder="Recipient email" required>
             <div class="row">
-                <input type="text" name="subject" placeholder="Subject">
+                <input id = "subject" type="text" name="subject" placeholder="Subject">
                 <input class="submit-btn" type="submit" value="Send">
             </div>
-            <textarea name="body" placeholder="Write your message here..."></textarea>
+            <textarea id = "body" name="body" placeholder="Write your message here..."></textarea>
         </form>
 
-        <div class="meta"> <span>Secure • No tracking</span> <span>Built for speed</span> </div>
+        <div id="status"></div>
+
     </div>
+    <script src="http://localhost:4000/socket.io/socket.io.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>
