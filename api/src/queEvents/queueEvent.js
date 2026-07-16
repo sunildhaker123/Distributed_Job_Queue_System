@@ -1,6 +1,8 @@
 const { QueueEvents } = require("bullmq");
 const connection = require("../redis");
 const { getIO } = require("../socket/index");
+const emailQueue = require("../queue");
+const FailedJobs = require("../models/FailedJobs");
 const queueEvent = new QueueEvents("emails", {
   connection,
 });
@@ -8,20 +10,6 @@ const queueEvent = new QueueEvents("emails", {
 
 const io = getIO();
 
-// console.log(io ? "IO EXISTS" : "IO UNDEFINED");
-// queueEvent.on("completed", ({ jobId }) => {
-//   console.log("Emitting for job:", jobId);
-//   const io = getIO();
-
-//   // io.to(jobId).emit("job:update", {
-//   //   jobId,
-//   //   state: "completed",
-//   // });
-//   io.emit("job:update", {
-//     jobId,
-//     state: "completed",
-//   });
-// });
 queueEvent.on("completed", ({ jobId }) => {
   //console.log("Emitting for job:", jobId);
 
@@ -45,6 +33,20 @@ queueEvent.on("active", ({ jobId }) => {
     jobId,
     state: "active",
   });
+});
+queueEvent.on("failed", async ({ jobId }) => {
+  const job = await emailQueue.getJob(jobId);
+  if (job.attemptsMade >= job.opts.attempts) {
+    await FailedJobs.create({
+      originalJobId: job.id,
+      queueName: job.queueName,
+      payload: job.data,
+      failedReason: job.failedReason,
+      attemptsMade: job.attemptsMade,
+      status: "pending",
+      failedAt: new Date(),
+    });
+  }
 });
 async function init() {
   await queueEvent.waitUntilReady();

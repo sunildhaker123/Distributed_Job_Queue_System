@@ -7,7 +7,7 @@ const emailWorker = new Worker(
   async (job) => {
     // console.log(`Job started with Job ID : ${job.id}`);
     console.log(`[${new Date().toLocaleTimeString()}] START ${job.id}`);
-    // if (job.attemptsStarted < 3) throw new Error("job execution failed");
+    if (job.attemptsStarted <= 3) throw new Error("job execution failed");
 
     await new Promise((resolve) => {
       setTimeout(resolve, 5000);
