@@ -5,8 +5,7 @@ socket.on("connect", () => {
 
 socket.on("job:update", ({ jobId, state }) => {
   console.log(jobId, state);
-  document.getElementById("status").innerHTML +=
-    `<p>Job ${jobId}: ${state}</p>`;
+  document.getElementById("status").innerText = `Job ${jobId}: ${state}`;
   if (state === "completed") {
     // setTimeout(() => {
     //   document.getElementById("status").innerHTML = "";

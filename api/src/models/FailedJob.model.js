@@ -33,8 +33,19 @@ const failedJobSchema = new mongoose.Schema(
       enum: ["pending", "retried"],
       default: "pending",
     },
-
+    retryCount: {
+      type: Number,
+      default: 0,
+    },
+    retriedJobsId: {
+      type: [String],
+      default: [],
+    },
     failedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    lastRetriedAt: {
       type: Date,
       default: Date.now,
     },

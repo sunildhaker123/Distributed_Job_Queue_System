@@ -1,14 +1,13 @@
 const { QueueEvents } = require("bullmq");
-const connection = require("../redis");
+const connection = require("../config/redis");
 const { getIO } = require("../socket/index");
-const emailQueue = require("../queue");
-const FailedJobs = require("../models/FailedJobs");
+const emailQueue = require("./email.queue");
+const FailedJobs = require("../models/FailedJob.model");
+const saveFailedJob = require("../services/failedJob.service");
 const queueEvent = new QueueEvents("emails", {
   connection,
 });
 // console.log("QUEUE EVENT FIRED");
-
-const io = getIO();
 
 queueEvent.on("completed", ({ jobId }) => {
   //console.log("Emitting for job:", jobId);
@@ -35,18 +34,13 @@ queueEvent.on("active", ({ jobId }) => {
   });
 });
 queueEvent.on("failed", async ({ jobId }) => {
+  const io = getIO();
+  io.to(jobId.toString()).emit("job:update", {
+    jobId,
+    state: "failed",
+  });
   const job = await emailQueue.getJob(jobId);
-  if (job.attemptsMade >= job.opts.attempts) {
-    await FailedJobs.create({
-      originalJobId: job.id,
-      queueName: job.queueName,
-      payload: job.data,
-      failedReason: job.failedReason,
-      attemptsMade: job.attemptsMade,
-      status: "pending",
-      failedAt: new Date(),
-    });
-  }
+  await saveFailedJob(job);
 });
 async function init() {
   await queueEvent.waitUntilReady();
