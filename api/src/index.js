@@ -28,10 +28,11 @@ connectDb().then(() => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const metricsRouter = require("./routes/metrics.routes");
+app.use("/api/get-metrics", metricsRouter);
 
-// app.get("/", (req, res) => {
-//   res.status(201).sendFile(path.resolve(__dirname, "../index.html"));
-// });
+const jobRouter = require("./routes/job.routes");
+app.use("/api/jobs", jobRouter);
 app.post("/api/send-mail", async (req, res) => {
   console.log(req.body);
   try {
