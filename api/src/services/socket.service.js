@@ -3,11 +3,15 @@ const { getIO } = require("../socket");
 function emitJobUpdate(jobId, state, reason = null) {
   const io = getIO();
 
-  io.to(jobId.toString()).emit("job:update", {
+  if (!io) return;
+
+  const payload = {
     jobId,
     state,
     reason,
-  });
+  };
+
+  io.emit("job:update", payload);
 }
 
 module.exports = {
